@@ -46,10 +46,10 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
 		}	
 	}
 
-
+        vector <float> row;
 		for (int i = 0; i <grid.size(); i++)
 	{
-		vector <float> row;
+		row.clear();
 		for (int j= 0; j < grid[0].size(); j++)
 		{
 			float newValue = grid[i][j] / totalSum;
@@ -152,9 +152,9 @@ vector < vector <float> > blur(vector < vector < float> > grid, float blurring) 
 	int height = grid.size();
 	int width = grid[0].size();
 	
-	for (int i = 0; i < height ; i++)
+	for (int i = 0; i < grid.size() ; i++)
 	{
-		for(int j = 0 ; j < width; j++)
+		for(int j = 0 ; j < grid[0].size(); j++)
 		{
 			float grid_val = grid[i][j];
 

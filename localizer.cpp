@@ -159,7 +159,6 @@ vector< vector <float> > sense(char color,
 
 	vector < vector <float> > newGrid;
 	vector <float> row;
-	float hit;
 
 	for (int i = 0; i <  grid.size(); i++)
 	{
