@@ -6,6 +6,7 @@ using namespace std;
 
 int main() {
 	cout << endl;
+	
 	test_helpers();
 	test_localizer();
 	cout << endl;

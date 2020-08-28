@@ -16,7 +16,7 @@
 #include <string>
 #include <fstream>
 #include "helpers.h"
-// #include "debugging_helpers.cpp"
+//#include "debugging_helpers.cpp"
 
 using namespace std;
 
@@ -37,6 +37,26 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
 	vector< vector<float> > newGrid;
 
 	// todo - your code here
+    int totalSum = 0;
+	for (int i = 0; i <grid.size(); i++)
+	{
+		for (int j= 0; j <grid[0].size(); j++)
+		{
+			totalSum = totalSum + grid[i][j];
+		}	
+	}
+
+
+		for (int i = 0; i <grid.size(); i++)
+	{
+		vector <float> row;
+		for (int j= 0; j < grid[0].size(); j++)
+		{
+			float newValue = grid[i][j] / totalSum;
+			row.push_back(newValue);
+		}
+		newGrid.push_back(row);
+	}
 
 	return newGrid;
 }
@@ -73,14 +93,85 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
 
     @return - a new normalized two dimensional grid where probability 
     	   has been blurred.
+
+		   		{ corner_prob,  adjacent_prob,  corner_prob },
+	    { adjacent_prob, center_prob,  adjacent_prob },
+		{ corner_prob,  adjacent_prob,  corner_prob }
+
+	window[0][0] = corner_prob;
+	window[0][1] = adjacent_prob;
+	window[0][1] = corner_prob;
+
+	window[1][0] = adjacent_prob;
+	window[1][1] = center_prob;
+	window[1][2] = adjacent_prob;
+
+	window[2][0] = corner_prob;
+	window[2][1] = adjacent_prob;
+	window[2][2] = corner_prob;
 */
 vector < vector <float> > blur(vector < vector < float> > grid, float blurring) {
 
-	vector < vector <float> > newGrid;
 	
-	// your code here
+	vector < vector <float> > newGrid (3, vector <float> (3));
+	//newGrid = zeros(3,3);
 
-	return normalize(newGrid);
+	float center_prob = 1.0 - blurring;
+	float corner_prob = blurring / 12.0;
+	float adjacent_prob = blurring / 6.0;
+
+	vector <vector <float> > window;
+	vector <float> newRow;
+	int i,j;
+	for (i=1; i <= 3; i++) {
+		newRow.clear();
+		for (j=1; j <= 3; j++) {
+			if (i == 1)
+			{
+			newRow.push_back(corner_prob);
+			newRow.push_back(adjacent_prob);
+			newRow.push_back(corner_prob);
+			}  
+			if (i == 2)
+			{
+			newRow.push_back(adjacent_prob);
+			newRow.push_back(center_prob);
+			newRow.push_back(adjacent_prob);
+			} 
+			if (i == 3)
+			{
+			newRow.push_back(corner_prob);
+			newRow.push_back(adjacent_prob);
+			newRow.push_back(corner_prob);
+			}
+		}
+		window.push_back(newRow);
+	}
+
+
+	int height = grid.size();
+	int width = grid[0].size();
+	
+	for (int i = 0; i < height ; i++)
+	{
+		for(int j = 0 ; j < width; j++)
+		{
+			float grid_val = grid[i][j];
+
+			for (int dx= -1; dx < 2; dx++)
+			{
+				for(int dy = -1; dy < 2; dy++)
+				{
+				    float mult = window[dx+1][dy+1];
+		            int new_i = (i + dy + height) % height; 
+		            int new_j = (j + dx + width) % width; 
+		            newGrid[new_i][new_j] += (grid_val * mult);
+				}
+			}		
+
+		}
+	}
+	return newGrid;
 }
 
 /** -----------------------------------------------
@@ -216,8 +307,8 @@ vector < vector <float> > zeros(int height, int width) {
 	return newGrid;
 }
 
-// int main() {
-// 	vector < vector < char > > map = read_map("maps/m1.txt");
-// 	show_grid(map);
-// 	return 0;
-// }
+//int main() {
+ //vector < vector < char > > map = read_map("maps/m1.txt");
+//  show_grid(map);
+ //return 0;
+//}

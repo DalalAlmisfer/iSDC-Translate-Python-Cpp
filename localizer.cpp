@@ -40,11 +40,17 @@ using namespace std;
            0.25 0.25
 */
 vector< vector <float> > initialize_beliefs(vector< vector <char> > grid) {
-	vector< vector <float> > newGrid;
 
-	// your code here
+	int height = grid.size();
+	int width = grid[0].size();
+	int area = height * width;
+	float belief_per_cell = 1.0 / area;
+
+	//reference : http://www.cplusplus.com/forum/beginner/236646/
+	vector <vector <float> > beliefs(height, vector <float> (width, belief_per_cell) );
+
 	
-	return newGrid;
+	return beliefs;
 }
 
 /**
@@ -84,15 +90,24 @@ vector< vector <float> > initialize_beliefs(vector< vector <char> > grid) {
     @return - a normalized two dimensional grid of floats 
          representing the updated beliefs for the robot. 
 */
-vector< vector <float> > move(int dy, int dx, 
-  vector < vector <float> > beliefs,
-  float blurring) 
+vector< vector <float> > move(int dy, int dx, vector < vector <float> > beliefs, float blurring) 
 {
 
-  vector < vector <float> > newGrid;
+  
+  int height = beliefs.size();
+  int width = beliefs[0].size();
+  vector < vector <float> > newGrid(height, vector <float> (width)); 
+ int new_i, new_j;
 
-  // your code here
-
+  for(int i = 0 ; i < height ; i++)
+  {
+	  for(int j = 0 ; j < width ; j++)
+	  {
+		   new_i = (i + dy) % width;
+		   new_j = (j + dx) % height;
+		  newGrid[int(new_i)][new_j] = beliefs[i][j];
+	  }
+  }
   return blur(newGrid, blurring);
 }
 
@@ -140,9 +155,26 @@ vector< vector <float> > sense(char color,
 	float p_hit,
 	float p_miss) 
 {
-	vector< vector <float> > newGrid;
 
-	// your code here
+
+	vector < vector <float> > newGrid;
+	vector <float> row;
+	float hit;
+
+	for (int i = 0; i <  grid.size(); i++)
+	{
+		row.clear();
+		for(int j = 0; j < grid[0].size() ; j++)
+		{
+			if( grid[i][j]  == color ) {
+				row.push_back(p_hit);
+			} else
+			{
+				row.push_back(p_miss);
+			}				
+		}
+		newGrid.push_back(row);
+	}
 
 	return normalize(newGrid);
 }
