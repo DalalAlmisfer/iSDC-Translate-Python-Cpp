@@ -1,6 +1,5 @@
 #ifndef DEBUGGING_HELPERS_H
 #define DEBUGGING_HELPERS_H
-
 #include <vector>
 
 // Displays a grid of beliefs. Does not return.
